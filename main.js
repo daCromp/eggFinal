@@ -40,10 +40,35 @@ loader.load('./modelV2.glb',
 	}
 );
 
+let incrementInterval;
+
+function increaseValue(phone) {
+	phone.intensity += 1;
+	console.log(`Wert erhöht auf: ${phone.intensity}`);
+}
+
+function decreaseValue(phone) {
+	phone.intensity -= 1;
+}
+
+function increaseFor5Seconds(phone) {
+	phone.intensity = 0;
+	for (let i = 0; i < 10; i++) {
+		setTimeout(() => {
+			increaseValue(phone);
+		}, 1000); // Warten Sie 5 Sekunden
+	}
+	const incrementInterval = setInterval(increaseValue(phone), 1000); // Wert im Intervall von 1 Sekunde erhöhen
+	setTimeout(() => {
+		clearInterval(incrementInterval); // Stoppt die Erhöhung nach 5 Sekunden
+		decreaseValue(phone); // Startet die Verringerung
+	}, 5000); // Warten Sie 5 Sekunden
+}
 
 function phoneAnimation(phone) {
-    phone.intensity += 1;
-    console.log(`Intensity is now ${phone.intensity}`);
+
+	increaseFor5Seconds(phone);
+	console.log(`Intensity is now ${phone.intensity}`);
 }
 
 
@@ -83,17 +108,7 @@ function onClick(event) {
 			break;
 		}
 		else if (intersects[i].object.name === 'phoneScreen') {
-
-			switch (phoneLight) {
-				case 'off':
-					for (let i = 0; i < 10; i++) {
-						setTimeout(increaseIntensity(phone), 100000); // Execute the function with a 1-second delay between each call
-					}
-					break;
-				case 'on':
-					break;
-			}
-			break;
+			phoneAnimation(phone);
 		}
 		else {
 			break;
@@ -115,7 +130,6 @@ function onPointerMove(event) {
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
-
 }
 
 
